@@ -52,6 +52,34 @@
                     <option value="">-- Tidak Ada (Daftar Pusat) --</option>
                 </select>
             </div>
+           <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 mb-6">
+    <h4 class="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <i data-lucide="credit-card" class="w-4 h-4 text-indigo-600"></i> Rekening Pembayar (Member)
+    </h4>
+    
+    <div class="space-y-4">
+        <div>
+            <label class="text-[9px] font-bold text-slate-400 uppercase ml-1">Metode Transfer</label>
+            <select id="pay-method" class="w-full p-4 bg-white rounded-xl border-none outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm text-sm">
+                <option value="BCA">Transfer BCA</option>
+                <option value="DANA">DANA</option>
+                <option value="OVO">OVO</option>
+                <option value="GOPAY">GOPAY</option>
+                <option value="LAINNYA">Bank Lainnya</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="text-[9px] font-bold text-slate-400 uppercase ml-1">Nama Pemilik Rekening</label>
+            <input type="text" id="pay-name" class="w-full p-4 bg-white rounded-xl border-none outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm text-sm" placeholder="Nama sesuai di buku tabungan/app">
+        </div>
+
+        <div>
+            <label class="text-[9px] font-bold text-slate-400 uppercase ml-1">Nomor Rekening / No. HP</label>
+            <input type="number" id="pay-account" class="w-full p-4 bg-white rounded-xl border-none outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm text-sm" placeholder="Contoh: 123456xxx">
+        </div>
+    </div>
+           </div>
             <div class="bg-indigo-50 p-5 rounded-2xl border-2 border-indigo-100 mb-6">
     <h4 class="text-xs font-black text-indigo-900 uppercase tracking-widest mb-3 flex items-center gap-2">
         <i data-lucide="info" class="w-4 h-4"></i> Informasi Pembayaran
