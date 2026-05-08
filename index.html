@@ -202,12 +202,19 @@
     
 
             try {
-                await db.collection("members").add(newMember);
-                if(uplineId) {
-                    await db.collection("members").doc(uplineId).update({
-                        totalEarnings: 0,
-                    });
-                }
+        await db.collection("members").add(newMember);
+
+        if (uplineId) {
+            const uplineRef = db.collection("members").doc(uplineId);
+            const uplineDoc = await uplineRef.get();
+            
+            if (uplineDoc.exists) {
+                const komisi = totalBelanja * 4;
+                await uplineRef.update({
+                    totalEarnings: firebase.firestore.FieldValue.increment(komisi)
+                });
+            }
+            }
                 document.getElementById('reg-form').classList.add('hidden');
                 document.getElementById('success-msg').classList.remove('hidden');
             } catch (err) {
