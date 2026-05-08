@@ -180,7 +180,7 @@
     const uplineId = document.getElementById('reg-upline').value;
     const totalBelanja = parseInt(document.getElementById('total-pembelian').value) || 0;
 
-    if(!name || !email || totalBelanja === 0) return alert("Mohon isi Nama, Email, dan Total Belanja!");
+    if(!name || !email || totalBelanja === 0) { return alert("Lengkapi data!"); }
 
     btn.disabled = true;
     btn.innerText = "MEMPROSES...";
