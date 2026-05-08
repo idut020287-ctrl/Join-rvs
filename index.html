@@ -163,12 +163,13 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        const PACKAGES = {
-            'Bronze': { profit: 150000, bonus: 100000 },
-            'Silver': { profit: 500000, bonus: 300000 },
-            'Gold': { profit: 1250000, bonus: 700000 },
-            'Platinum': { profit: 3000000, bonus: 1500000 }
-        };
+        <!-- INPUT TOTAL BELANJA -->
+<div class="mb-6">
+    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Total Nominal Belanja (Rp)</label>
+    <input type="number" id="total-pembelian" placeholder="Contoh: 2000000" 
+           class="w-full p-4 bg-slate-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm font-bold text-slate-800">
+    <p class="text-[9px] text-slate-400 mt-2 ml-1">*Masukkan total belanja Device + Liquid</p>
+</div>
 
         // Load Upline List Automatically
         async function loadUplines() {
@@ -194,20 +195,22 @@
             btn.disabled = true;
             btn.innerText = "MEMPROSES...";
 
-            const pkg = PACKAGES[level];
-            const newMember = {
-    name, 
-    email, 
-    level,
-    paymentFromMethod: document.getElementById('pay-method').value,
-    paymentFromName: document.getElementById('pay-name').value,
-    paymentFromAccount: document.getElementById('pay-account').value,
-    buyDevice: parseInt(document.getElementById('prod-device').value) || 0, // Cek baris ini
-    buyLiquid: parseInt(document.getElementById('prod-liquid').value) || 0, // Cek baris ini
-    totalEarnings: pkg.profit,
-    uplineId: uplineId || null,
-    createdAt: Date.now()
-};
+            const totalBelanja = parseInt(document.getElementById('total-pembelian').value) || 0;
+    
+    const newMember = {
+        name,
+        email,
+        totalBelanja: totalBelanja, // Menyimpan total belanja
+        buyDevice: parseInt(document.getElementById('prod-device').value) || 0,
+        buyLiquid: parseInt(document.getElementById('prod-liquid').value) || 0,
+        paymentFromMethod: document.getElementById('pay-method').value,
+        paymentFromName: document.getElementById('pay-name').value,
+        paymentFromAccount: document.getElementById('pay-account').value,
+        totalEarnings: 0, // Awal pendaftaran profit masih 0
+        uplineId: uplineId || null,
+        createdAt: Date.now()
+    };
+
             try {
                 await db.collection("members").add(newMember);
                 if(uplineId) {
