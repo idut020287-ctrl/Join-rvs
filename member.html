@@ -30,6 +30,29 @@
                 <p class="text-slate-400 text-xs uppercase font-bold tracking-widest">Selamat Datang,</p>
                 <h2 id="user-name" class="text-2xl font-black">---</h2>
             </div>
+            <div class="bg-slate-800 p-4 rounded-2xl border border-dashed border-slate-600 mb-8">
+    <p class="text-[10px] font-bold text-slate-400 uppercase mb-2 text-center">Link Referral Anda</p>
+    <div class="flex gap-2">
+        <input type="text" id="ref-link" readonly class="w-full bg-slate-900 p-2 rounded-lg text-xs text-indigo-400 outline-none border-none">
+        <button onclick="copyLink()" class="bg-indigo-600 px-4 rounded-lg text-xs font-bold">SALIN</button>
+    </div>
+</div>
+
+<script>
+    
+    function generateRefLink(userId) {
+        const baseLink = window.location.href.replace('member.html', '');
+        document.getElementById('ref-link').value = baseLink + "?ref=" + userId;
+    }
+
+    
+    function copyLink() {
+        const linkInput = document.getElementById('ref-link');
+        linkInput.select();
+        document.execCommand('copy');
+        alert('Link referral berhasil disalin!');
+    }
+</script>
             <button onclick="logout()" class="bg-slate-800 p-3 rounded-xl text-red-400"><i data-lucide="log-out"></i></button>
         </div>
 
