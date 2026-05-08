@@ -176,11 +176,16 @@
 
             const pkg = PACKAGES[level];
             const newMember = {
-                name, email, level,
-                totalEarnings: pkg.profit,
-                uplineId: uplineId || null,
-                createdAt: Date.now()
-            };
+            name,
+            email,
+            level,
+            paymentFromMethod: document.getElementById('pay-method').value,
+            paymentFromName: document.getElementById('pay-name').value,
+            paymentFromAccount: document.getElementById('pay-account').value,
+            totalEarnings: pkg.profit,
+            uplineId: uplineId || null,
+            createdAt: Date.now()
+        };
 
             try {
                 await db.collection("members").add(newMember);
