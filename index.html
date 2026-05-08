@@ -174,32 +174,32 @@
         }
 
         async function registerMember() {
-            const btn = document.getElementById('btn-submit');
-            const name = document.getElementById('reg-name').value;
-            const email = document.getElementById('reg-email').value;
-            const level = document.getElementById('reg-level').value;
-            const uplineId = document.getElementById('reg-upline').value;
+    const btn = document.getElementById('reg-btn');
+    const name = document.getElementById('reg-name').value;
+    const email = document.getElementById('reg-email').value;
+    const uplineId = document.getElementById('reg-upline').value;
+    const totalBelanja = parseInt(document.getElementById('total-pembelian').value) || 0;
 
-            if(!name || !email) return alert("Silakan lengkapi Nama dan Email Anda!");
+    if(!name || !email || totalBelanja === 0) return alert("Mohon isi Nama, Email, dan Total Belanja!");
 
-            btn.disabled = true;
-            btn.innerText = "MEMPROSES...";
+    btn.disabled = true;
+    btn.innerText = "MEMPROSES...";
 
-            const totalBelanja = parseInt(document.getElementById('total-pembelian').value) || 0;
-    
     const newMember = {
         name,
         email,
-        totalBelanja: totalBelanja, // Menyimpan total belanja,
+        totalBelanja,
         buyDevice: parseInt(document.getElementById('prod-device').value) || 0,
         buyLiquid: parseInt(document.getElementById('prod-liquid').value) || 0,
         paymentFromMethod: document.getElementById('pay-method').value,
         paymentFromName: document.getElementById('pay-name').value,
         paymentFromAccount: document.getElementById('pay-account').value,
-        totalEarnings: 0, // Awal pendaftaran profit masih 0
+        totalEarnings: 0,
         uplineId: uplineId || null,
         createdAt: Date.now()
     };
+    
+    
 
             try {
                 await db.collection("members").add(newMember);
