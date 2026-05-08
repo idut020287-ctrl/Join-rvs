@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Area - RVS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen font-sans">
+
+    <div id="loader" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+    </div>
+
+    <div id="login-section" class="hidden flex items-center justify-center min-h-screen p-6">
+        <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-700">
+            <h1 class="text-2xl font-black mb-2 text-center">LOGIN MEMBER</h1>
+            <p class="text-slate-400 text-sm text-center mb-6">Masukkan email terdaftar Anda</p>
+            <input type="email" id="login-email" class="w-full p-4 bg-slate-900 rounded-2xl border-none mb-4 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="email@contoh.com">
+            <button onclick="login()" class="w-full bg-indigo-600 p-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all">MASUK KE DASHBOARD</button>
+        </div>
+    </div>
+
+    <div id="dashboard-section" class="hidden p-6 max-w-2xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <p class="text-slate-400 text-xs uppercase font-bold tracking-widest">Selamat Datang,</p>
+                <h2 id="user-name" class="text-2xl font-black">---</h2>
+            </div>
+            <button onclick="logout()" class="bg-slate-800 p-3 rounded-xl text-red-400"><i data-lucide="log-out"></i></button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-gradient-to-br from-indigo-600 to-violet-700 p-5 rounded-3xl shadow-xl">
+                <p class="text-[10px] font-bold text-indigo-200 uppercase mb-1">Level Anda</p>
+                <h3 id="user-level" class="text-xl font-black">---</h3>
+            </div>
+            <div class="bg-slate-800 p-5 rounded-3xl border border-slate-700">
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Total Member</p>
+                <h3 id="total-downline" class="text-xl font-black">0 Orang</h3>
+            </div>
+        </div>
+
+        <div class="bg-emerald-600 p-6 rounded-3xl shadow-xl mb-8 flex justify-between items-center">
+            <div>
+                <p class="text-[10px] font-bold text-emerald-100 uppercase mb-1">Total Pendapatan</p>
+                <h3 id="user-profit" class="text-2xl font-black text-white">Rp 0</h3>
+            </div>
+            <i data-lucide="wallet" class="w-10 h-10 text-emerald-200 opacity-50"></i>
+        </div>
+
+        <div class="bg-slate-800 rounded-3xl p-6 border border-slate-700">
+            <h4 class="text-sm font-bold mb-4 flex items-center gap-2">
+                <i data-lucide="users" class="text-indigo-400"></i> Anggota Anda
+            </h4>
+            <div id="downline-list" class="space-y-4">
+                <p class="text-slate-500 text-xs text-center py-4 italic">Belum ada anggota yang bergabung melalui Anda.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            const firebaseConfig = {
+  apiKey: "AIzaSyBFKPQqVQjNpBG2J0aMU4ekCb70y4NPAwo",
+  authDomain: "maju-bersama-rvs.firebaseapp.com",
+  projectId: "maju-bersama-rvs",
+  storageBucket: "maju-bersama-rvs.firebasestorage.app",
+  messagingSenderId: "394887869712",
+  appId: "1:394887869712:web:900d50fee20c4d8295e195",
+  measurementId: "G-5SVN9KRF7J"
+};
+
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            if(!email) return alert("Masukkan email!");
+
+            const q = await db.collection("members").where("email", "==", email).get();
+            if(q.empty) {
+                alert("Email tidak ditemukan atau belum diaktivasi!");
+            } else {
+                const userData = q.docs[0].data();
+                localStorage.setItem('memberEmail', email);
+                loadDashboard(userData, q.docs[0].id);
+            }
+        }
+
+        async function loadDashboard(data, userId) {
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+
+            document.getElementById('user-name').innerText = data.name;
+            document.getElementById('user-level').innerText = data.level;
+            document.getElementById('user-profit').innerText = "Rp " + data.totalEarnings.toLocaleString();
+
+            // Cari Downline
+            const downlineQuery = await db.collection("members").where("uplineId", "==", userId).get();
+            document.getElementById('total-downline').innerText = downlineQuery.size + " Orang";
+
+            const listContainer = document.getElementById('downline-list');
+            if(!downlineQuery.empty) {
+                listContainer.innerHTML = "";
+                downlineQuery.forEach(doc => {
+                    const d = doc.data();
+                    listContainer.innerHTML += `
+                        <div class="flex justify-between items-center p-3 bg-slate-900 rounded-2xl border border-slate-700">
+                            <div>
+                                <p class="font-bold text-sm text-slate-200">${d.name}</p>
+                                <p class="text-[10px] text-slate-500">${d.level}</p>
+                            </div>
+                            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-3 py-1 rounded-full uppercase">Aktif</span>
+                        </div>
+                    `;
+                });
+            }
+            lucide.createIcons();
+        }
+
+        function logout() {
+            localStorage.removeItem('memberEmail');
+            location.reload();
+        }
+
+        // Cek Session
+        window.onload = async () => {
+            const savedEmail = localStorage.getItem('memberEmail');
+            if(savedEmail) {
+                const q = await db.collection("members").where("email", "==", savedEmail).get();
+                if(!q.empty) {
+                    loadDashboard(q.docs[0].data(), q.docs[0].id);
+                } else {
+                    document.getElementById('loader').classList.add('hidden');
+                    document.getElementById('login-section').classList.remove('hidden');
+                }
+            } else {
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('login-section').classList.remove('hidden');
+            }
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
