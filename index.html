@@ -199,8 +199,6 @@
         createdAt: Date.now()
     };
     
-    
-
             try {
         // 1. Simpan data member baru
         await db.collection("members").add(newMember);
@@ -211,7 +209,7 @@
             const uplineDoc = await uplineRef.get();
             
             if (uplineDoc.exists) {
-                const komisi = totalBelanja * 0.1; // Contoh komisi 10% dari total belanja
+                const komisi = totalBelanja * 0.1; // Komisi 10%
                 await uplineRef.update({
                     totalEarnings: firebase.firestore.FieldValue.increment(komisi)
                 });
@@ -222,12 +220,13 @@
         document.getElementById('reg-form').classList.add('hidden');
         document.getElementById('success-msg').classList.remove('hidden');
 
-    } catch (err)  {
-                alert("Terjadi kesalahan, coba lagi nanti.");
-                btn.disabled = false;
-                btn.innerText = "GABUNG SEKARANG";
-            }
-        }
+    } catch (err) {
+        console.error(err);
+        alert("Terjadi kesalahan, coba lagi nanti.");
+        btn.disabled = false;
+        btn.innerText = "GABUNG SEKARANG";
+    }
+      }
 
         loadUplines();
         lucide.createIcons();
