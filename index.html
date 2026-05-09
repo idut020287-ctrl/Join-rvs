@@ -202,22 +202,27 @@
     
 
             try {
+        // 1. Simpan data member baru
         await db.collection("members").add(newMember);
 
+        // 2. Berikan komisi ke upline (jika ada)
         if (uplineId) {
             const uplineRef = db.collection("members").doc(uplineId);
             const uplineDoc = await uplineRef.get();
             
             if (uplineDoc.exists) {
-                const komisi = totalBelanja * 4;
+                const komisi = totalBelanja * 0.1; // Contoh komisi 10% dari total belanja
                 await uplineRef.update({
                     totalEarnings: firebase.firestore.FieldValue.increment(komisi)
                 });
             }
-            }
-                document.getElementById('reg-form').classList.add('hidden');
-                document.getElementById('success-msg').classList.remove('hidden');
-            } catch (err) {
+        }
+
+        // 3. Tampilkan pesan sukses
+        document.getElementById('reg-form').classList.add('hidden');
+        document.getElementById('success-msg').classList.remove('hidden');
+
+    } catch (err)  {
                 alert("Terjadi kesalahan, coba lagi nanti.");
                 btn.disabled = false;
                 btn.innerText = "GABUNG SEKARANG";
